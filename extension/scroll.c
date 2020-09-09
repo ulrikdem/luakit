@@ -54,24 +54,6 @@ window_resize_cb(WebKitDOMDOMWindow *window, WebKitDOMEvent *UNUSED(event), WebK
     send_scroll_msg(h, v, web_page, IPC_SCROLL_TYPE_winresize);
 }
 
-static gint scroll_width_prev = -1, scroll_height_prev = -1;
-
-static void
-document_resize_cb(WebKitDOMElement *html, WebKitDOMEvent *UNUSED(event), WebKitWebPage *web_page)
-{
-    gint h = webkit_dom_element_get_scroll_width(html);
-    gint v = webkit_dom_element_get_scroll_height(html);
-
-    /* Only send message if the size changes */
-    /* This still isn't that performant... needs a better solution really */
-    if (h == scroll_width_prev && v == scroll_height_prev)
-        return;
-    scroll_width_prev = h;
-    scroll_height_prev = v;
-
-    send_scroll_msg(h, v, web_page, IPC_SCROLL_TYPE_docresize);
-}
-
 static void
 web_page_document_loaded_cb(WebKitWebPage *web_page, gpointer UNUSED(user_data))
 {
@@ -85,14 +67,11 @@ web_page_document_loaded_cb(WebKitWebPage *web_page, gpointer UNUSED(user_data))
         "scroll", G_CALLBACK(window_scroll_cb), FALSE, web_page);
     webkit_dom_event_target_add_event_listener(WEBKIT_DOM_EVENT_TARGET(window),
         "resize", G_CALLBACK(window_resize_cb), FALSE, web_page);
-    webkit_dom_event_target_add_event_listener(WEBKIT_DOM_EVENT_TARGET(html),
-        "DOMSubtreeModified", G_CALLBACK(document_resize_cb), FALSE, web_page);
 
     /* ... and make sure initial values are set */
 
     window_scroll_cb(window, NULL, web_page);
     window_resize_cb(window, NULL, web_page);
-    document_resize_cb(html, NULL, web_page);
 }
 
 static void

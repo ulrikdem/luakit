@@ -62,7 +62,6 @@ typedef struct _ipc_lua_ipc_t {
 } ipc_lua_ipc_t;
 
 typedef enum {
-    IPC_SCROLL_TYPE_docresize,
     IPC_SCROLL_TYPE_winresize,
     IPC_SCROLL_TYPE_scroll
 } ipc_scroll_subtype_t;
