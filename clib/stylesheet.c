@@ -66,7 +66,9 @@ regenerate_stylesheet(lstylesheet_t *stylesheet)
         webkit_user_style_sheet_unref(old);
 
     stylesheet->stylesheet = webkit_user_style_sheet_new(stylesheet->source,
-            WEBKIT_USER_CONTENT_INJECT_ALL_FRAMES, WEBKIT_USER_STYLE_LEVEL_USER, NULL, NULL);
+            stylesheet->top_frame_only ?
+                WEBKIT_USER_CONTENT_INJECT_TOP_FRAME : WEBKIT_USER_CONTENT_INJECT_ALL_FRAMES,
+            WEBKIT_USER_STYLE_LEVEL_USER, NULL, NULL);
 
     if (old && globalconf.webviews) {
         /* Any web views which had this stylesheet enabled need to be regenerated */
@@ -97,6 +99,21 @@ luaH_stylesheet_get_source(lua_State *L, lstylesheet_t *stylesheet)
     return 1;
 }
 
+static int
+luaH_stylesheet_set_top_frame_only(lua_State *L, lstylesheet_t *stylesheet)
+{
+    stylesheet->top_frame_only = luaH_checkboolean(L, -1);
+    regenerate_stylesheet(stylesheet);
+    return 0;
+}
+
+static int
+luaH_stylesheet_get_top_frame_only(lua_State *L, lstylesheet_t *stylesheet)
+{
+    lua_pushboolean(L, stylesheet->top_frame_only);
+    return 1;
+}
+
 void
 stylesheet_class_setup(lua_State *L)
 {
@@ -124,6 +141,11 @@ stylesheet_class_setup(lua_State *L)
             (lua_class_propfunc_t) luaH_stylesheet_set_source,
             (lua_class_propfunc_t) luaH_stylesheet_get_source,
             (lua_class_propfunc_t) luaH_stylesheet_set_source);
+
+    luaH_class_add_property(&stylesheet_class, L_TK_TOP_FRAME_ONLY,
+            (lua_class_propfunc_t) luaH_stylesheet_set_top_frame_only,
+            (lua_class_propfunc_t) luaH_stylesheet_get_top_frame_only,
+            (lua_class_propfunc_t) luaH_stylesheet_set_top_frame_only);
 }
 
 // vim: ft=c:et:sw=4:ts=8:sts=4:tw=80
