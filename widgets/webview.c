@@ -61,8 +61,6 @@ typedef struct {
     gboolean is_failed;
     gboolean private;
 
-    /** Document size */
-    gint doc_w, doc_h;
     /** Viewport size */
     gint win_w, win_h;
     /** Current scroll position */

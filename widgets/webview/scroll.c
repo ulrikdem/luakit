@@ -28,10 +28,6 @@ webview_scroll_recv(widget_t *w, const ipc_scroll_t *msg)
         return;
 
     switch (msg->subtype) {
-        case IPC_SCROLL_TYPE_docresize:
-            d->doc_w = msg->h;
-            d->doc_h = msg->v;
-            break;
         case IPC_SCROLL_TYPE_winresize:
             d->win_w = msg->h;
             d->win_h = msg->v;
@@ -78,8 +74,6 @@ luaH_webview_scroll_index(lua_State *L)
     switch (t) {
         PN_CASE(X, d->scroll_x);
         PN_CASE(Y, d->scroll_y);
-        PN_CASE(XMAX, d->doc_w - d->win_w);
-        PN_CASE(YMAX, d->doc_h - d->win_h);
         PN_CASE(XPAGE_SIZE, d->win_w);
         PN_CASE(YPAGE_SIZE, d->win_h);
         default:
