@@ -146,6 +146,7 @@ templates_dir
 text
 title
 top
+top_frame_only
 total_size
 type
 urgency_hint

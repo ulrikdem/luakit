@@ -29,6 +29,7 @@ typedef struct {
     LUA_OBJECT_HEADER
     WebKitUserStyleSheet *stylesheet;
     gchar *source;
+    gboolean top_frame_only;
 } lstylesheet_t;
 
 void stylesheet_class_setup(lua_State *);
